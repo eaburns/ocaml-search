@@ -15,6 +15,8 @@ let _ =
   end in
   let module T = Alg_table.Make(D) in
   let search = T.lookup alg in
-  let path, cost = search 1 in
-    printf "cost: %f\n" cost;
-    List.iter (printf "%d\n") path
+    match search 1 with
+      | None -> printf "No solution found\n"
+      | Some (path, cost) ->
+	  printf "cost: %f\n" cost;
+	  List.iter (printf "%d\n") path

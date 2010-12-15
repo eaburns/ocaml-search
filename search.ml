@@ -24,5 +24,5 @@ end
 module type Alg = sig
   (** The minimum algorithm interface. *)
   type state
-  val search : state -> state list * float
+  val search : state -> (state list * float) option
 end

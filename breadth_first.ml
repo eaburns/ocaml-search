@@ -37,7 +37,7 @@ struct
 	      (D.expand s)
       done;
       match !goal with
-	| None -> raise Not_found
-	| Some n -> build_path n, n.c
+	| None -> None
+	| Some n -> Some (build_path n, n.c)
 
 end
