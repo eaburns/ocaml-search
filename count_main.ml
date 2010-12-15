@@ -6,15 +6,22 @@
 
 open Printf
 
-let _ =
-  let alg = Sys.argv.(1) in
-  let goal = int_of_string Sys.argv.(2) in
+let alg_tbl goal =
   let module D = struct
     include Count_domain
     let is_goal = make_is_goal goal
+    let d = make_d goal
+    let h = make_h goal
   end in
-  let module T = Alg_table.Make(D) in
-  let search = T.lookup alg in
+  let module T0 = Alg_table.Domain(D) in
+  let module T1 = Alg_table.Std_domain(D) in
+    T0.table @ T1.table
+
+let _ =
+  let alg = Sys.argv.(1) in
+  let goal = int_of_string Sys.argv.(2) in
+  let tbl = alg_tbl goal in
+  let search = List.assoc alg tbl in
     match search 1 with
       | None -> printf "No solution found\n"
       | Some (path, cost) ->

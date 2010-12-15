@@ -15,6 +15,12 @@ let expand s =
 let make_is_goal goal_val s =
   s = goal_val
 
+let make_d goal_val s =
+  float (abs (s - goal_val))
+
+let make_h goal_val s =
+  make_d goal_val s
+
 let hash i = (i:int)
 
 let equal a b = (a:int) = b
