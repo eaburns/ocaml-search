@@ -21,8 +21,10 @@ struct
     mutable pq_pos : int;
   }
 
+
   let rec build_path ?(accum=[]) { s = s; p = p } =
     if s == p.s then s :: accum else build_path ~accum:(s :: accum) p
+
 
   let is_better a b =
     if a.f = b.f then
@@ -30,24 +32,31 @@ struct
     else
       a.f < b.f
 
+
   let update_pq_pos a i =
     a.pq_pos <- i
 
 
+  let update_node o n n' g' =
+    (** [update_node o n n' g'] updates a node given a new g value
+	[g']. *)
+    n'.g <- g';
+    n'.f <- n'.h +. g';
+    n'.p <- n;
+    if n'.pq_pos = Dpq.no_position then
+      Dpq.insert o n'
+    else
+      Dpq.see_update o n'.pq_pos
+
+
   let handle_children o c n =
+    (** [handle_children o c n] expands [n] and deals with its
+	children. *)
     let handle_child (s', dg) =
       let g' = n.g +. dg in
 	try
 	  let n' = Ht.find c s' in
-	    if n'.g > g' then begin
-	      n'.g <- g';
-	      n'.f <- n'.h +. g';
-	      n'.p <- n;
-	      if n'.pq_pos = Dpq.no_position then
-		Dpq.insert o n'
-	      else
-		Dpq.see_update o n'.pq_pos
-	    end
+	    if n'.g > g' then update_node o n n' g'
 	with Not_found ->
 	  let h = D.h s' in
 	  let n' = { s = s'; p = n;
@@ -59,7 +68,9 @@ struct
     in
       List.iter handle_child (D.expand n.s)
 
+
   let search state =
+    (** [search state] A* search starting at [state]. *)
     let h = D.h state in
     let rec init = { s = state; p = init;
 		     h = h; g = 0.; f = h;
