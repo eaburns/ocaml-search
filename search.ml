@@ -10,12 +10,6 @@ module type Domain = sig
   include Hashtbl.HashedType with type t = state
   val expand : state -> (state * float) list
   val is_goal : state -> bool
-end
-
-
-module type Std_domain = sig
-  (** The stardard domain interface. *)
-  include Domain
   val h : state -> float
   val d : state -> float
 end

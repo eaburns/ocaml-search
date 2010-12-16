@@ -8,11 +8,8 @@
 
 module Domain (D : Search.Domain) = struct
   let table =
-    [ "bfs", let module M = Breadth_first.Make(D) in M.search; ]
-end
-
-
-module Std_domain (D : Search.Std_domain) = struct
-  let table =
-    [ ]
+    [
+      "bfs", (let module M = Breadth_first.Make(D) in M.search);
+      "astar", (let module M = Astar.Make(D) in M.search);
+    ]
 end

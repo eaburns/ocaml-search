@@ -13,9 +13,7 @@ let alg_tbl goal =
     let d = make_d goal
     let h = make_h goal
   end in
-  let module T0 = Alg_table.Domain(D) in
-  let module T1 = Alg_table.Std_domain(D) in
-    T0.table @ T1.table
+  (let module T = Alg_table.Domain(D) in T.table)
 
 let _ =
   let alg = Sys.argv.(1) in

@@ -1,2 +1,6 @@
 syntax: glob
 _build*
+*unix_unknown*
+depends*
+*.cmi
+
