@@ -10,6 +10,7 @@ type t = state
 type metric_state = state
 type revable_state = state
 type rev_ops_state = state
+type typed_state = state
 
 module Operator = struct
   type t = Up | Down
