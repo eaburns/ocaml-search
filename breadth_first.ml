@@ -34,7 +34,7 @@ struct
 	    List.iter
 	      (fun (s', dc) ->
 		 Queue.push { s = s'; c = c +. dc; p = n } q)
-	      (D.expand s)
+	      (D.succs s)
       done;
       match !goal with
 	| None -> None

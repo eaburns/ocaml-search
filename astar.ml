@@ -66,7 +66,7 @@ struct
 	    Dpq.insert o n';
 	    Ht.add c s' n'
     in
-      List.iter handle_child (D.expand n.s)
+      List.iter handle_child (D.succs n.s)
 
 
   let search state =
