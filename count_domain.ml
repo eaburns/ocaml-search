@@ -8,7 +8,41 @@
 type state = int
 type t = state
 type metric_state = state
-type reversable_state = state
+type revable_state = state
+type rev_ops_state = state
+
+module Operator = struct
+  type t = Up | Down
+
+  let equal a = function
+    | Up when a = Up -> true
+    | Down when a = Down -> true
+    | _ -> false
+
+  let hash = function
+    | Up -> 0
+    | Down -> 1
+end
+
+module State_type = struct
+  type t = Positive | Negative
+
+  let to_int = function
+    | Positive -> 0
+    | Negative -> 1
+end
+
+let t s =
+  if s < 0 then
+    State_type.Negative
+  else
+    State_type.Positive
+
+let succs_ops s =
+  [ s + 1, Operator.Up, 1.;
+    s - 1, Operator.Down, ~-.1.; ]
+
+let preds_ops s = succs_ops s
 
 let succs s =
   [ s + 1, 1.;

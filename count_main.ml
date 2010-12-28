@@ -13,7 +13,10 @@ let alg_tbl goal =
     let d = make_d goal
     let h = make_h goal
   end in
-  (let module T = Alg_table.Domain(D) in T.table)
+    (let module T = Alg_table.Domain(D) in T.table)
+    @ (let module T = Alg_table.Metric_domain(D) in T.table)
+    @ (let module T = Alg_table.Reversable_domain(D) in T.table)
+    @ (let module T = Alg_table.Reversable_with_ops_domain(D) in T.table)
 
 let _ =
   let alg = Sys.argv.(1) in
