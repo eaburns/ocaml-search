@@ -3,4 +3,5 @@ _build*
 *unix_unknown*
 depends*
 *.cmi
-
+*.annot
+use.ml

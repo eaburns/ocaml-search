@@ -1,0 +1,15 @@
+Systems:
+"structs"
+
+
+Files:
+"alg_table"
+"breadth_first"
+"astar"
+"count_domain"
+"search"
+
+
+Libraries:
+
+Result: "count_solver" native "count_main"
