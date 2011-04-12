@@ -3,13 +3,13 @@ Systems:
 
 
 Files:
-"alg_table"
+"search"
 "breadth_first"
 "astar"
-"count_domain"
-"search"
+"alg_table"
+"count/count_domain"
 
 
 Libraries:
 
-Result: "count_solver" native "count_main"
+Result: "count_solver" native "count/count_main"
