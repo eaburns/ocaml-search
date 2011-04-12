@@ -20,10 +20,11 @@ let _ =
   let init =
     let x0 = inst.Grid_inst.x0 and y0 = inst.Grid_inst.y0 in
     Grid_inst.id inst.Grid_inst.h x0 y0 in
-  let _, t =
+  let cost, time =
     Wrsys.with_time (fun () -> match search [||] init with
-      | None -> printf "No solution found\n"
+      | None -> infinity
       | Some (path, cost) ->
-	printf "cost: %f\n" cost;
-	printf "length: %d\n" (List.length path)) in
-  printf "time: %g seconds\n" t
+	printf "length: %d\n" (List.length path);
+	cost) in
+  printf "cost: %g\n" cost;
+  printf "time: %g seconds\n" time
