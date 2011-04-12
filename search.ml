@@ -87,5 +87,5 @@ end
 (** A search algorithm interface. *)
 module type Alg = sig
   type state
-  val search : state -> (state list * float) option
+  val search : string array -> state -> (state list * float) option
 end

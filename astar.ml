@@ -50,7 +50,7 @@ struct
     in
     List.iter handle_child (D.succs ~parent:n.p.s ~state:n.s)
 
-  let search state =
+  let search _args state =
     let h = D.h state in
     let rec init =
       { s = state; p = init; h = h; g = 0.; f = h; pq_pos = no_pos } in

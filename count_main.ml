@@ -19,7 +19,7 @@ let _ =
   let goal = int_of_string Sys.argv.(2) in
   let tbl = alg_tbl goal in
   let search = List.assoc alg tbl in
-    match search 1 with
+    match search [||] 1 with
       | None -> printf "No solution found\n"
       | Some (path, cost) ->
 	  printf "cost: %f\n" cost;

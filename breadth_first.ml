@@ -15,7 +15,7 @@ struct
   let rec build_path ?(accum=[]) { s = s; p = p } =
     if s == p.s then s :: accum else build_path ~accum:(s :: accum) p
 
-  let search state =
+  let search _args state =
     let q = Queue.create () in
     let goal = ref None in
     let rec init = { s = state; c = 0.; p = init } in
