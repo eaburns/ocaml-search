@@ -12,6 +12,13 @@ let alg_tbl inst =
   end in
   (let module T = Alg_table.Domain(D) in T.table)
 
+let warm_gc inst =
+  let words = inst.Grid_inst.w * inst.Grid_inst.h * 128 in
+  Gc.set
+    { (Gc.get ()) with
+      Gc.minor_heap_size = words;
+      Gc.space_overhead = 8192; }
+
 let _ =
   let alg = Sys.argv.(1) in
   let inst = Grid_inst.read stdin in
@@ -20,6 +27,7 @@ let _ =
   let init =
     let x0 = inst.Grid_inst.x0 and y0 = inst.Grid_inst.y0 in
     Grid_inst.id inst.Grid_inst.h x0 y0 in
+  ignore (warm_gc inst);
   let cost, time =
     Wrsys.with_time (fun () -> match search [||] init with
       | None -> infinity

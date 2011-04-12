@@ -35,8 +35,9 @@ struct
     else
       Dpq.see_update opn node.pq_pos
 
-  let handle_children opn cls n =
+  let handle_children gend opn cls n =
     let handle_child (s', dg) =
+      incr gend;
       let g' = n.g +. dg in
       try
 	let n' = Ht.find cls s' in
@@ -56,13 +57,15 @@ struct
       { s = state; p = init; h = h0; g = 0.; f = h0; pq_pos = no_pos } in
     let opn = Dpq.create is_better update_pq_pos 1024 init in
     let cls = Ht.create 149 in
-    let goal = ref None in
+    let goal = ref None and expd = ref 0 and gend = ref 0 in
     Dpq.insert opn init;
     Ht.add cls state init;
     while not (Dpq.empty_p opn) && !goal = None do
       let { s = s; } as n = Dpq.extract_first opn in
-      if D.is_goal s then goal := Some n else handle_children opn cls n
+      incr expd;
+      if D.is_goal s then goal := Some n else handle_children gend opn cls n
     done;
+    Printf.printf "expanded: %d\ngenerated: %d\n" !expd !gend;
     match !goal with None -> None | Some n -> Some (build_path n, n.g)
 
 end
