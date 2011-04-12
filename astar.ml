@@ -51,9 +51,9 @@ struct
     List.iter handle_child (D.succs ~parent:n.p.s ~state:n.s)
 
   let search _args state =
-    let h = D.h state in
+    let h0 = D.h state in
     let rec init =
-      { s = state; p = init; h = h; g = 0.; f = h; pq_pos = no_pos } in
+      { s = state; p = init; h = h0; g = 0.; f = h0; pq_pos = no_pos } in
     let opn = Dpq.create is_better update_pq_pos 1024 init in
     let cls = Ht.create 149 in
     let goal = ref None in
@@ -63,8 +63,6 @@ struct
       let { s = s; } as n = Dpq.extract_first opn in
       if D.is_goal s then goal := Some n else handle_children opn cls n
     done;
-    match !goal with
-      | None -> None
-      | Some n -> Some (build_path n, n.g)
+    match !goal with None -> None | Some n -> Some (build_path n, n.g)
 
 end
