@@ -1,9 +1,3 @@
-(** Simple implementation of breadth-first search.
-
-    @author eaburns
-    @since 2010-12-15
-*)
-
 module Make (D : Search.Domain)
   : Search.Alg with type state = D.state =
 struct

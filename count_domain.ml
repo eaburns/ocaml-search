@@ -1,9 +1,5 @@
 (** Some clumbsy domain that just counts numbers up and down until it
-    hits some goal value.
-
-    @author eaburns
-    @since 2010-12-15
-*)
+    hits some goal value. *)
 
 type state = int
 type t = state

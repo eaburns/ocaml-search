@@ -1,10 +1,6 @@
 (** Builds a table of algorithms for a given domain and allows lookup
-    by strings Builds a table of algorithms for a given domain and allows
-    lookup by strings.
-
-    @author eaburns
-    @since 2010-12-15
-*)
+    by strings Builds a table of algorithms for a given domain and
+    allows lookup by strings. *)
 
 module Domain (D : Search.Domain) =
 struct

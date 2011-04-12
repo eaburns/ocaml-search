@@ -1,8 +1,4 @@
-(** Sample main program for the counting domain.
-
-    @author eaburns
-    @since 2010-12-15
-*)
+(** Main program for the counting domain. *)
 
 open Printf
 

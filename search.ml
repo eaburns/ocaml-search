@@ -1,8 +1,4 @@
-(** Signatures of searh modules.
-
-    @author eaburns
-    @since 2010-12-15
-*)
+(** Signatures of searh modules. *)
 
 (** {1 Search Domains} *)
 
