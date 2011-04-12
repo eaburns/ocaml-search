@@ -26,27 +26,27 @@ struct
   let update_pq_pos a i =
     a.pq_pos <- i
 
-  let update_node o ~node ~parent g =
+  let update_node opn ~node ~parent g =
     node.g <- g;
     node.f <- node.h +. g;
     node.p <- parent;
     if node.pq_pos = no_pos then
-      Dpq.insert o node
+      Dpq.insert opn node
     else
-      Dpq.see_update o node.pq_pos
+      Dpq.see_update opn node.pq_pos
 
-  let handle_children o c n =
+  let handle_children opn cls n =
     let handle_child (s', dg) =
       let g' = n.g +. dg in
       try
-	let n' = Ht.find c s' in
-	if n'.g > g' then update_node o ~node:n' ~parent:n g'
+	let n' = Ht.find cls s' in
+	if n'.g > g' then update_node opn ~node:n' ~parent:n g'
       with Not_found ->
 	let h = D.h s' in
 	let n' =
 	  { s = s'; p = n; h = h; g = g'; f = h +. g'; pq_pos = no_pos } in
-	Dpq.insert o n';
-	Ht.add c s' n'
+	Dpq.insert opn n';
+	Ht.add cls s' n'
     in
     List.iter handle_child (D.succs ~parent:n.p.s ~state:n.s)
 
@@ -54,14 +54,14 @@ struct
     let h = D.h state in
     let rec init =
       { s = state; p = init; h = h; g = 0.; f = h; pq_pos = no_pos } in
-    let o = Dpq.create is_better update_pq_pos 1024 init in
-    let c = Ht.create 149 in
+    let opn = Dpq.create is_better update_pq_pos 1024 init in
+    let cls = Ht.create 149 in
     let goal = ref None in
-    Dpq.insert o init;
-    Ht.add c state init;
-    while not (Dpq.empty_p o) && !goal = None do
-      let { s = s; } as n = Dpq.extract_first o in
-      if D.is_goal s then goal := Some n else handle_children o c n
+    Dpq.insert opn init;
+    Ht.add cls state init;
+    while not (Dpq.empty_p opn) && !goal = None do
+      let { s = s; } as n = Dpq.extract_first opn in
+      if D.is_goal s then goal := Some n else handle_children opn cls n
     done;
     match !goal with
       | None -> None
