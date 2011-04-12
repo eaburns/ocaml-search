@@ -9,9 +9,9 @@ struct
   type node = {
     s : state;
     h : float;
-    mutable p : node;
     mutable g : float;
     mutable f : float;
+    mutable p : node;
     mutable pq_pos : int;
   }
 
