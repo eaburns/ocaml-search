@@ -45,11 +45,15 @@ let succs_ops s =
 
 let preds_ops s = succs_ops s
 
-let succs s =
-  [ s + 1, 1.;
-    s - 1, ~-.1.; ]
+let succs ~parent ~state =
+  if parent = state + 1 then
+    [ state - 1, ~-.1. ]
+  else if parent = state - 1 then
+    [ state + 1, 1. ]
+  else
+    [ state + 1, 1.; state - 1, ~-.1. ]
 
-let preds s = succs s
+let preds state = succs ~parent:state ~state
 
 let make_is_goal goal_val s =
   s = goal_val

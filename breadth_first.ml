@@ -34,7 +34,7 @@ struct
 	    List.iter
 	      (fun (s', dc) ->
 		 Queue.push { s = s'; c = c +. dc; p = n } q)
-	      (D.succs s)
+	      (D.succs ~parent:n.p.s ~state:s)
       done;
       match !goal with
 	| None -> None

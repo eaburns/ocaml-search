@@ -14,7 +14,7 @@ module type Domain = sig
 
   (** Gets the list of successor states and the operator cost that
       generated the state. *)
-  val succs : state -> (state * float) list
+  val succs : parent:state -> state:state -> (state * float) list
 
   (** Tests if the given state is a goal. *)
   val is_goal : state -> bool
