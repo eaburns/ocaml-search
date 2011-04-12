@@ -19,19 +19,17 @@ struct
     let q = Queue.create () in
     let goal = ref None in
     let rec init = { s = state; c = 0.; p = init } in
-      Queue.push init q;
-      while not (Queue.is_empty q) && !goal = None do
-	let { s = s; c = c; } as n = Queue.take q in
-	  if D.is_goal s then
-	    goal := Some n
-	  else
-	    List.iter
-	      (fun (s', dc) ->
-		 Queue.push { s = s'; c = c +. dc; p = n } q)
-	      (D.succs ~parent:n.p.s ~state:s)
-      done;
-      match !goal with
-	| None -> None
-	| Some n -> Some (build_path n, n.c)
+    Queue.push init q;
+    while not (Queue.is_empty q) && !goal = None do
+      let { s = s; c = c; } as n = Queue.take q in
+      if D.is_goal s then
+	goal := Some n
+      else
+	let push (s', dc) = Queue.push { s = s'; c = c +. dc; p = n } q in
+	List.iter push (D.succs ~parent:n.p.s ~state:s)
+    done;
+    match !goal with
+      | None -> None
+      | Some n -> Some (build_path n, n.c)
 
 end

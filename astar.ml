@@ -27,8 +27,6 @@ struct
     a.pq_pos <- i
 
   let update_node o n n' g' =
-    (** [update_node o n n' g'] updates a node given a new g value
-	[g']. *)
     n'.g <- g';
     n'.f <- n'.h +. g';
     n'.p <- n;
@@ -38,8 +36,6 @@ struct
       Dpq.see_update o n'.pq_pos
 
   let handle_children o c n =
-    (** [handle_children o c n] expands [n] and deals with its
-	children. *)
     let handle_child (s', dg) =
       let g' = n.g +. dg in
       try
@@ -55,7 +51,6 @@ struct
     List.iter handle_child (D.succs ~parent:n.p.s ~state:n.s)
 
   let search state =
-    (** [search state] A* search starting at [state]. *)
     let h = D.h state in
     let rec init =
       { s = state; p = init; h = h; g = 0.; f = h; pq_pos = no_pos } in
