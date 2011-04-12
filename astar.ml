@@ -26,21 +26,21 @@ struct
   let update_pq_pos a i =
     a.pq_pos <- i
 
-  let update_node o n n' g' =
-    n'.g <- g';
-    n'.f <- n'.h +. g';
-    n'.p <- n;
-    if n'.pq_pos = no_pos then
-      Dpq.insert o n'
+  let update_node o ~node ~parent g =
+    node.g <- g;
+    node.f <- node.h +. g;
+    node.p <- parent;
+    if node.pq_pos = no_pos then
+      Dpq.insert o node
     else
-      Dpq.see_update o n'.pq_pos
+      Dpq.see_update o node.pq_pos
 
   let handle_children o c n =
     let handle_child (s', dg) =
       let g' = n.g +. dg in
       try
 	let n' = Ht.find c s' in
-	if n'.g > g' then update_node o n n' g'
+	if n'.g > g' then update_node o ~node:n' ~parent:n g'
       with Not_found ->
 	let h = D.h s' in
 	let n' =
