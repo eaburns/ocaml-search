@@ -68,6 +68,6 @@ let hash i = (i:int)
 
 let equal a b = (a:int) = b
 
-let dist i j = abs (i - j)
+let dist ~src ~dst = abs (src - dst)
 
-let cost i j = float (dist i j)
+let cost ~src ~dst = float (dist dst dst)

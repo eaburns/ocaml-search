@@ -49,11 +49,11 @@ module type Metric = sig
   type metric_state
 
   (** Heuristic estimate of cost between two different states. *)
-  val cost : metric_state -> metric_state -> float
+  val cost : src:metric_state -> dst:metric_state -> float
 
   (** Heuristic estimate of search distance between two different
       states. *)
-  val dist : metric_state -> metric_state -> int
+  val dist : src:metric_state -> dst:metric_state -> int
 end
 
 
