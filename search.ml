@@ -1,4 +1,4 @@
-(** Signatures of searh modules. *)
+(** Signatures of search modules. *)
 
 (** {1 Search Domains} *)
 
