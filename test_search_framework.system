@@ -1,9 +1,9 @@
 Systems:
-"structs"
 
 Files:
 "info"
 "limit"
+"structs/heap"
 "search"
 "algs/breadth_first"
 "algs/astar"
@@ -15,7 +15,7 @@ Result: "count_solver" native
 	"count/count_domain"
 	"count/count_main"
 
-Result: "grid_solver" native
+Result: "grid_solver" nativedebug
 	"grid/grid_inst"
 	"grid/grid"
 	"grid/grid_main"

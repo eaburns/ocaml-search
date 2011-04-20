@@ -14,7 +14,7 @@ struct
     mutable pq_pos : int;
   }
 
-  let no_pos = Dpq.no_position
+  let no_pos = Heap.no_pos
 
   let rec build_path ?(accum=[]) { s = s; p = p } =
     if s == p.s then s :: accum else build_path ~accum:(s :: accum) p
@@ -30,9 +30,9 @@ struct
     node.g <- g;
     node.p <- parent;
     if node.pq_pos = no_pos then
-      Dpq.insert opn node
+      Heap.push opn node
     else
-      Dpq.see_update opn node.pq_pos
+      Heap.update_key opn node.pq_pos
 
   let handle_children info opn cls n =
     let handle_child (s', dg) =
@@ -45,7 +45,7 @@ struct
       with Not_found ->
 	let n' =
 	  { s = s'; p = n; g = g'; f = D.h s' +. g'; pq_pos = no_pos } in
-	Dpq.insert opn n';
+	Heap.push opn n';
 	Ht.add cls s' n'
     in
     info.Info.expd <- info.Info.expd + 1;
@@ -54,14 +54,14 @@ struct
   let search info lims _args state =
     let rec init =
       { s = state; p = init;g = 0.; f = D.h state; pq_pos = no_pos } in
-    let opn = Dpq.create is_better update_pq_pos 1024 init in
+    let opn = Heap.init ~index:update_pq_pos is_better [||] in
     let cls = Ht.create 149 in
     let goal = ref None in
     let lim_reached = Limit.make_reached lims in
-    Dpq.insert opn init;
+    Heap.push opn init;
     Ht.add cls state init;
-    while not (Dpq.empty_p opn) && !goal = None && not (lim_reached info) do
-      let { s = s; } as n = Dpq.extract_first opn in
+    while not (Heap.is_empty opn) && !goal = None && not (lim_reached info) do
+      let { s = s; } as n = Heap.pop opn in
       if D.is_goal s then goal := Some n else handle_children info opn cls n
     done;
     match !goal with None -> None | Some n -> Some (build_path n, n.g)

@@ -9,6 +9,9 @@ let alg_tbl inst =
     let d = make_d inst
     let h = make_h inst
     let succs = make_succs inst
+    let pr i =
+      let x, y = Grid_inst.loc inst.Grid_inst.h i in
+      Printf.printf "x=%d, y=%d\n%!" x y
   end in
   (let module T = Alg_table.Domain(D) in T.table)
 

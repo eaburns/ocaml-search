@@ -20,6 +20,9 @@ module type Domain = sig
 
   (** Heuristic estimate of search effort to goal. *)
   val d : state -> int
+
+  (** Print the state. *)
+  val pr : state -> unit
 end
 
 
