@@ -7,7 +7,7 @@ Files:
 "search"
 "algs/breadth_first"
 "algs/astar"
-"algs/alg_table"
+"alg_table"
 
 Libraries:
 

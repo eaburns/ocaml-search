@@ -21,6 +21,11 @@ let warm_gc inst =
       Gc.space_overhead = 8192; }
 *)()
 
+let time f =
+  let stime = Sys.time () in
+  let r = f () in
+  r, Sys.time () -. stime
+
 let _ =
   let alg = Sys.argv.(1) in
   let inst = Grid_inst.read stdin in
@@ -33,7 +38,7 @@ let _ =
   let info = Info.create () in
   let lims = [] in
   let cost, time =
-    Wrsys.with_time (fun () -> match search info lims [||] init with
+    time (fun () -> match search info lims [||] init with
       | None -> infinity
       | Some (path, cost) ->
 	printf "length: %d\n" (List.length path);
