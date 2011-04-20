@@ -1,7 +1,6 @@
 Systems:
 "structs"
 
-
 Files:
 "info"
 "limit"
@@ -9,7 +8,6 @@ Files:
 "breadth_first"
 "astar"
 "alg_table"
-
 
 Libraries:
 
