@@ -34,7 +34,8 @@ let left i =
 let right i =
   i * 2 + 2
 
-(* Push an element down away from the root. *)
+(* Push an element down away from the root. The result is the index at
+   which the pushed element finally landed. *)
 let down heap i elm =
   let elms = heap.elms and less = heap.less and fill = heap.fill in
   let index = heap.index in
@@ -92,7 +93,8 @@ let pop heap =
     heap.index max no_pos;
     max
 
-(* Pull an element toward the root. *)
+(* Pull an element toward the root.  The result is the index at which
+   the element finally landed. *)
 let up heap i elm =
   let elms = heap.elms and less = heap.less in
   let index = heap.index in
