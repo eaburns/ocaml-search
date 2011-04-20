@@ -40,14 +40,14 @@ let down heap i elm =
   let index = heap.index in
   let rec loop i =
     let l = left i and r = right i in
-    let si, se =
+    let smind, smelm =
       if l < fill && less elms.(l) elm then l, elms.(l) else i, elm in
-    let si, se =
-      if r < fill && less elms.(r) se then r, elms.(r) else si, se in
-    if si <> i then begin
-      elms.(i) <- se;
-      index se i;
-      loop si
+    let smind, smelm =
+      if r < fill && less elms.(r) smelm then r, elms.(r) else smind, smelm in
+    if smind <> i then begin
+      elms.(i) <- smelm;
+      index smelm i;
+      loop smind
     end else begin
       elms.(i) <- elm;
       index elm i;
