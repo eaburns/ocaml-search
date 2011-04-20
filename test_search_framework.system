@@ -9,12 +9,15 @@ Files:
 "breadth_first"
 "astar"
 "alg_table"
-"count/count_domain"
-"grid/grid_inst"
-"grid/grid"
 
 
 Libraries:
 
-Result: "count_solver" native "count/count_main"
-Result: "grid_solver" native "grid/grid_main"
+Result: "count_solver" native
+	"count/count_domain"
+	"count/count_main"
+
+Result: "grid_solver" native
+	"grid/grid_inst"
+	"grid/grid"
+	"grid/grid_main"
