@@ -13,11 +13,13 @@ let alg_tbl inst =
   (let module T = Alg_table.Domain(D) in T.table)
 
 let warm_gc inst =
+(*
   let words = inst.Grid_inst.w * inst.Grid_inst.h * 128 in
   Gc.set
     { (Gc.get ()) with
       Gc.minor_heap_size = words;
       Gc.space_overhead = 8192; }
+*)()
 
 let _ =
   let alg = Sys.argv.(1) in
@@ -28,11 +30,15 @@ let _ =
     let x0 = inst.Grid_inst.x0 and y0 = inst.Grid_inst.y0 in
     Grid_inst.id inst.Grid_inst.h x0 y0 in
   ignore (warm_gc inst);
+  let info = Info.create () in
+  let lims = [] in
   let cost, time =
-    Wrsys.with_time (fun () -> match search [||] init with
+    Wrsys.with_time (fun () -> match search info lims [||] init with
       | None -> infinity
       | Some (path, cost) ->
 	printf "length: %d\n" (List.length path);
 	cost) in
   printf "cost: %g\n" cost;
-  printf "time: %g seconds\n" time
+  printf "time: %g seconds\n" time;
+  Info.output stdout info;
+  Limit.output stdout lims

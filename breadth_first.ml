@@ -15,18 +15,23 @@ struct
   let rec build_path ?(accum=[]) { s = s; p = p } =
     if s == p.s then s :: accum else build_path ~accum:(s :: accum) p
 
-  let search _args state =
+  let search info lims _args state =
     let q = Queue.create () in
     let goal = ref None in
     let rec init = { s = state; c = 0.; p = init } in
+    let lim_reached = Limit.make_reached lims in
     Queue.push init q;
-    while not (Queue.is_empty q) && !goal = None do
+    while not (Queue.is_empty q) && !goal = None && not (lim_reached info) do
       let { s = s; c = c; } as n = Queue.take q in
       if D.is_goal s then
 	goal := Some n
-      else
-	let push (s', dc) = Queue.push { s = s'; c = c +. dc; p = n } q in
+      else begin
+	info.Info.expd <- info.Info.expd + 1;
+	let push (s', dc) =
+	  info.Info.gend <- info.Info.gend + 1;
+	  Queue.push { s = s'; c = c +. dc; p = n } q in
 	List.iter push (D.succs ~parent:n.p.s ~state:s)
+      end
     done;
     match !goal with
       | None -> None

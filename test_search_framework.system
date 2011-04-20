@@ -3,6 +3,8 @@ Systems:
 
 
 Files:
+"info"
+"limit"
 "search"
 "breadth_first"
 "astar"

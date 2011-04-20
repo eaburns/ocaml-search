@@ -34,12 +34,13 @@ struct
     else
       Dpq.see_update opn node.pq_pos
 
-  let handle_children gend opn cls n =
+  let handle_children info opn cls n =
     let handle_child (s', dg) =
-      incr gend;
+      info.Info.gend <- info.Info.gend + 1;
       let g' = n.g +. dg in
       try
 	let n' = Ht.find cls s' in
+	info.Info.dups <- info.Info.dups + 1;
 	if n'.g > g' then update_node opn ~node:n' ~parent:n g'
       with Not_found ->
 	let n' =
@@ -47,22 +48,22 @@ struct
 	Dpq.insert opn n';
 	Ht.add cls s' n'
     in
+    info.Info.expd <- info.Info.expd + 1;
     List.iter handle_child (D.succs ~parent:n.p.s ~state:n.s)
 
-  let search _args state =
+  let search info lims _args state =
     let rec init =
       { s = state; p = init;g = 0.; f = D.h state; pq_pos = no_pos } in
     let opn = Dpq.create is_better update_pq_pos 1024 init in
     let cls = Ht.create 149 in
-    let goal = ref None and expd = ref 0 and gend = ref 0 in
+    let goal = ref None in
+    let lim_reached = Limit.make_reached lims in
     Dpq.insert opn init;
     Ht.add cls state init;
-    while not (Dpq.empty_p opn) && !goal = None do
+    while not (Dpq.empty_p opn) && !goal = None && not (lim_reached info) do
       let { s = s; } as n = Dpq.extract_first opn in
-      incr expd;
-      if D.is_goal s then goal := Some n else handle_children gend opn cls n
+      if D.is_goal s then goal := Some n else handle_children info opn cls n
     done;
-    Printf.printf "expanded: %d\ngenerated: %d\n" !expd !gend;
     match !goal with None -> None | Some n -> Some (build_path n, n.g)
 
 end
