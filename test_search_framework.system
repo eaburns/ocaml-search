@@ -5,9 +5,9 @@ Files:
 "info"
 "limit"
 "search"
-"breadth_first"
-"astar"
-"alg_table"
+"algs/breadth_first"
+"algs/astar"
+"algs/alg_table"
 
 Libraries:
 
