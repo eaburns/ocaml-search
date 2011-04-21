@@ -66,11 +66,10 @@ let init ?(index=default_index) less elms =
     index = index;
   } in
   let elms = heap.elms in
-  if heap.fill > 0 then begin
+  if heap.fill > 0 then
     for i = (heap.fill - 1) / 2 downto 0 do
       ignore (down heap i elms.(i))
     done;
-  end;
   heap
 
 exception Empty
