@@ -26,8 +26,7 @@ end = struct
   let contents size = String.create size
 
   let set str ind vl =
-    (* Chang.unsafe_chr = better performance and worse debugging.*)
-    str.[ind] <- Char.chr vl
+    str.[ind] <- Char.unsafe_chr vl
 
   let get str ind =
     Char.code str.[ind]
