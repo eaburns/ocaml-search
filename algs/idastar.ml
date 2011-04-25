@@ -20,10 +20,7 @@ struct
 	info.Info.expd <- info.Info.expd + 1;
 	let iter = D.succ_iter () in
 	let goal, cost = kids info stop bound g infinity iter in
-	if goal = [] then
-	  [], cost
-	else
-	  D.dup () :: goal, cost
+	if goal = [] then [], cost else D.dup () :: goal, cost
       end
     end else
       [], f
