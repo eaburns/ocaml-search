@@ -28,7 +28,7 @@ struct
   and kids info stop bound g minoob iter = match D.next iter with
     | None ->
       [], minoob
-    | Some (kid, op, c) ->
+    | Some (kid, c, op) ->
       info.Info.gend <- info.Info.gend + 1;
       let goal, cost = dfs info stop bound (g +. c) kid in
       D.undo op;
