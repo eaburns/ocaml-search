@@ -41,13 +41,13 @@ let arg_spec lims =
 let output ch lims =
   let rec out = function
     | Expd n :: ls ->
-      fprintf ch "#pair \"expansion limit\" \"%d\"\n" n;
+      fprintf ch "#pair  \"expansion limit\" \"%d\"\n" n;
       out ls
     | Gend n :: ls ->
-      fprintf ch "#pair \"generation limit\" \"%d\"\n" n;
+      fprintf ch "#pair  \"generation limit\" \"%d\"\n" n;
       out ls
     | Time t :: ls ->
-      fprintf ch "#pair \"time limit\" \"%g\"\n" t;
+      fprintf ch "#pair  \"time limit\" \"%g\"\n" t;
       out ls
     | [] -> ()
   in out lims
