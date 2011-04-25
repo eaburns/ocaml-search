@@ -1,3 +1,4 @@
+open Scanf
 
 (* Disallow any confusion between positions and contents arrays. *)
 module Ary : sig
@@ -73,3 +74,28 @@ let korf_12 =
     init = s;
     goal = goal_pos 4 4; }
 
+let read_positions ch size =
+  let pos = positions size in
+  for i = 0 to size - 1 do fscanf ch " %d" (fun p -> set pos i p) done;
+  pos
+
+let contents_of_positions : positions ary -> int -> contents ary =
+  (fun pos size ->
+    let conts = contents size in
+    for tile = 0 to size - 1 do
+      let p = get pos tile in
+      set conts p tile
+    done;
+    conts)
+
+let read ch =
+  let rows, cols = fscanf ch "%d %d" (fun r c -> r, c) in
+  let size = rows * cols in
+  fscanf ch " %[^\n]" (fun _ -> ());
+  let init = read_positions ch size in
+  fscanf ch " %[^\n]" (fun _ -> ());
+  let goal = read_positions ch size in
+  { rows = rows;
+    cols = cols;
+    init = contents_of_positions init size;
+    goal = goal; }
