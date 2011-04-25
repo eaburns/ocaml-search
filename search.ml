@@ -25,6 +25,8 @@ module type Domain = sig
   val pr : state -> unit
 end
 
+(** Search in a domain that allows in place modification of a single
+    state. *)
 module type Inplace = sig
   type inplace_state
   type iter
