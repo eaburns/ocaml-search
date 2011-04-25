@@ -101,7 +101,8 @@ let md_table inst =
   done;
   tab
 
-(** Make a function to compute the Manhattan distance a contents array. *)
+(** Make a function to compute the Manhattan distance of a contents
+    array. *)
 let md inst mdtab : contents ary -> float =
   let size = inst.rows * inst.cols in
   let sum = ref 0 in
