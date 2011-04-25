@@ -1,54 +1,8 @@
 (** A sliding tiles solver. *)
 
 (* Disallow any confusion between positions and contents arrays. *)
-module Ary : sig
-  type positions
-  type contents
-  type 'a ary = private string
 
-  val positions : int -> positions ary
-  val contents : int -> contents ary
-  val set : 'a ary -> int -> int -> unit
-  val get : 'a ary -> int -> int
-  val swap : 'a ary -> int -> int -> unit
-  val copy : 'a ary -> 'a ary
-  val equal : 'a ary -> 'a ary -> bool
-
-end = struct
-  type contents
-
-  type positions
-
-  type 'a ary = string
-
-  let positions size = String.create size
-
-  let contents size = String.create size
-
-  let set str ind vl =
-    str.[ind] <- Char.unsafe_chr vl
-
-  let get str ind =
-    Char.code str.[ind]
-
-  let swap str a b =
-    let t = get str a in
-    set str a (get str b);
-    set str b t
-
-  let copy = String.copy
-
-  let equal a b = String.compare a b = 0
-end
-
-open Ary
-
-type inst = {
-  rows : int;
-  cols : int;
-  init : contents ary;
-  goal : positions ary;
-}
+open Tiles_inst
 
 type oper = Left | Right | Up | Down | No_op
 
@@ -161,7 +115,9 @@ let apply inst : int -> contents ary -> oper -> int =
       | Down -> blnk + cols
       | No_op -> blnk in
     assert (blnk' < size);
-    swap cont blnk blnk';
+    let tile = get cont blnk' in
+    set cont blnk tile;
+    set cont blnk' 0;
     assert (get cont blnk' = 0);
     blnk')
 
@@ -202,8 +158,8 @@ let blank_pos inst conts =
 
 type state = {
   contents : contents ary;
-  blnk : int;
-  h : float;
+  mutable blnk : int;
+  mutable h : float;
 }
 
 type t = state
@@ -263,48 +219,51 @@ let h state =
 let d state =
   state.h
 
-let succ_iter inst blnk parent =
-  { op = get_op inst !blnk parent.blnk;
+let succ_iter inst state parent =
+  { op = get_op inst state.blnk parent.blnk;
     nxt = 0; }
 
 (** Make a next-state function for the given iterator over the given
     in-place state. *)
-let rec next inst md_incr blnk h conts it =
+let rec next inst md_incr state it =
   if it.nxt < Array.length opers then begin
     let op = opers.(it.nxt) in
     it.nxt <- it.nxt + 1;
-    if (applicable inst !blnk op) && op <> it.op then
-      let blnk' = apply inst !blnk conts op in
-      let h' = md_incr !h !blnk blnk' conts in
-      blnk := blnk';
-      h := h';
-      Some ({ contents = conts; blnk = blnk'; h = !h; }, 1., op)
+    let conts = state.contents and blnk = state.blnk in
+    if (applicable inst blnk op) && op <> it.op then
+      let blnk' = apply inst blnk conts op in
+      let h' = md_incr state.h blnk blnk' conts in
+      state.blnk <- blnk';
+      state.h <- h';
+      Some ({ state with h = state.h }, 1., op)
     else
-      next inst md_incr blnk h conts it
+      next inst md_incr state it
   end else
     None
 
 (** Undo the given operator. *)
-let rec undo inst md_incr blnk h conts op =
+let rec undo inst md_incr state op =
   let rev = rev_op op in
-  assert (applicable inst !blnk rev);
-  let blnk' = apply inst !blnk conts rev in
-  let h' = md_incr !h !blnk blnk' conts in
-  blnk := blnk';
-  h := h'
+  let conts = state.contents and blnk = state.blnk in
+  assert (applicable inst blnk rev);
+  let blnk' = apply inst blnk conts rev in
+  let h' = md_incr state.h blnk blnk' conts in
+  state.blnk <- blnk';
+  state.h <- h'
 
 (** Duplicate the current in-place state. *)
-let dup blnk h conts () =
-  { contents = copy conts; blnk = !blnk; h = !h; }
+let dup state () =
+  { state with contents = copy state.contents; }
 
 (** Make a set of functions that operate on a single state using
     in-place modification. *)
 let inplace inst mdtab =
   let md_incr = md_incr inst mdtab in
   let conts = copy inst.init in
-  let blnk = ref (blank_pos inst conts) in
-  let h = ref (md inst mdtab conts) in
-  succ_iter inst blnk,
-  next inst md_incr blnk h conts,
-  undo inst md_incr blnk h conts,
-  dup blnk h conts
+  let state = { contents = conts;
+		blnk = blank_pos inst conts;
+		h = md inst mdtab conts; } in
+  succ_iter inst state,
+  next inst md_incr state,
+  undo inst md_incr state,
+  dup state

@@ -16,11 +16,12 @@ Result: "count_solver" native
 	"count/count_domain"
 	"count/count_main"
 
-Result: "grid_solver" nativedebug
+Result: "grid_solver" native
 	"grid/grid_inst"
 	"grid/grid"
 	"grid/grid_main"
 
-Result: "tiles_solver" nativedebug
+Result: "tiles_solver" native
+	"tiles/tiles_inst"
 	"tiles/tiles"
 	"tiles/tiles_main"
