@@ -25,7 +25,6 @@ module type Domain = sig
   val pr : state -> unit
 end
 
-
 (** Spaces that have types attached to their states. *)
 module type Typed_state = sig
   type typed_state
@@ -41,7 +40,6 @@ module type Typed_state = sig
   val t : typed_state -> State_type.t
 end
 
-
 (** Spaces with a cost and distance function defined between arbitrary
     states. *)
 module type Metric = sig
@@ -55,7 +53,6 @@ module type Metric = sig
   val dist : src:metric_state -> dst:metric_state -> int
 end
 
-
 (** Domains where it is possible to compute the predecessors of a
     state. *)
 module type Reversable = sig
@@ -65,7 +62,6 @@ module type Reversable = sig
       the given state from its predecessor. *)
   val preds : revable_state -> (revable_state * float) list
 end
-
 
 (** Domains where it is possible to compute the predecessors of a
     state and with named operators for generating states. *)
@@ -83,9 +79,7 @@ module type Reversable_with_ops = sig
   val preds_ops : rev_ops_state -> (rev_ops_state * Operator.t * float) list
 end
 
-
 (** {1 Search algorithms} *)
-
 
 (** A search algorithm interface. *)
 module type Alg = sig
