@@ -40,10 +40,13 @@ module type Inplace = sig
      no more children.  The current state is passed as part of the
      result so that the heuristic or goal test may be performed on
      it. *)
-  val next : iter -> (inplace_state * float) option
+  val next : iter -> (inplace_state * oper * float) option
 
-  (* Get the path to the current state. *)
-  val path: unit -> inplace_state list
+  (* Undo the given operation on the current state. *)
+  val undo : oper -> unit
+
+  (* Get a duplicate of the current state. *)
+  val dup : unit -> inplace_state
 
 end
 

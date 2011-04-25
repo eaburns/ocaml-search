@@ -7,8 +7,6 @@ module Make (D :
   end) =
 struct
 
-  exception Goal of D.state list * float
-
   exception Limit_reached
 
   let rec dfs info stop bound g state =
@@ -17,19 +15,29 @@ struct
       raise Limit_reached;
     if f <= bound then begin
       if D.is_goal state then
-	raise (Goal (D.path (), g));
-      info.Info.expd <- info.Info.expd + 1;
-      kids info stop bound g infinity (D.succ_iter ())
+	[D.dup ()], g
+      else begin
+	info.Info.expd <- info.Info.expd + 1;
+	let goal, cost = kids info stop bound g infinity (D.succ_iter ()) in
+	if goal = [] then
+	  [], cost
+	else
+	  D.dup () :: goal, cost
+      end
     end else
-      f
+      [], f
 
   and kids info stop bound g minoob iter = match D.next iter with
     | None ->
-      minoob
-    | Some (kid, c) ->
+      [], minoob
+    | Some (kid, op, c) ->
       info.Info.gend <- info.Info.gend + 1;
-      let minoob' = min (dfs info stop bound (g +. c) kid) minoob in
-      kids info stop bound g minoob' iter
+      let goal, cost = dfs info stop bound (g +. c) kid in
+      D.undo op;
+      if goal = [] then
+	kids info stop bound g (min cost minoob) iter
+      else
+	goal, cost
 
   let finite fl = match classify_float fl with
     | FP_nan -> invalid_arg "Idastar.finite: nan"
@@ -40,11 +48,11 @@ struct
     let stop = Limit.make_reached lims in
     try
       let rec iter f =
-	let f' = dfs info stop f 0. state in
-	if finite f' then iter f' else None in
+	let goal, cost = dfs info stop f 0. state in
+	if goal = [] then
+	  if finite cost then iter cost else None
+	else
+	  Some (goal, cost) in
       iter (D.h state)
-    with
-      | Goal (path, cost) -> Some (path, cost)
-      | Limit_reached -> None
-
+    with Limit_reached -> None
 end
