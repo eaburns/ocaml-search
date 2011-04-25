@@ -210,7 +210,10 @@ type t = state
 
 type inplace_state = state
 
-type iter = int ref
+type iter = {
+  op : oper;
+  mutable nxt : int;
+}
 
 let hash a = Hashtbl.hash a.contents
 
@@ -239,7 +242,7 @@ let fmt_op fmt = function
   | No_op -> Format.fprintf fmt "No_op"
 
 let succs inst md_incr ~parent ~state =
-  let p_op = rev_op (get_op inst parent.blnk state.blnk) in
+  let p_op = get_op inst state.blnk parent.blnk in
   let consider_op lst op =
     if op = p_op || not (applicable inst state.blnk op) then
       lst
@@ -260,23 +263,24 @@ let h state =
 let d state =
   state.h
 
-let succ_iter () =
-  ref 0
+let succ_iter inst blnk parent =
+  { op = get_op inst !blnk parent.blnk;
+    nxt = 0; }
 
 (** Make a next-state function for the given iterator over the given
     in-place state. *)
-let rec next inst md_incr blnk h conts iter =
-  if !iter < Array.length opers then begin
-    let op = opers.(!iter) in
-    incr iter;
-    if (applicable inst !blnk op) then
+let rec next inst md_incr blnk h conts it =
+  if it.nxt < Array.length opers then begin
+    let op = opers.(it.nxt) in
+    it.nxt <- it.nxt + 1;
+    if (applicable inst !blnk op) && op <> it.op then
       let blnk' = apply inst !blnk conts op in
       let h' = md_incr !h !blnk blnk' conts in
       blnk := blnk';
       h := h';
       Some ({ contents = conts; blnk = blnk'; h = !h; }, 1., op)
     else
-      next inst md_incr blnk h conts iter
+      next inst md_incr blnk h conts it
   end else
     None
 
@@ -300,6 +304,7 @@ let inplace inst mdtab =
   let conts = copy inst.init in
   let blnk = ref (blank_pos inst conts) in
   let h = ref (md inst mdtab conts) in
+  succ_iter inst blnk,
   next inst md_incr blnk h conts,
   undo inst md_incr blnk h conts,
   dup blnk h conts
