@@ -1,5 +1,7 @@
 (* Information on a search. *)
 
+open Printf
+
 type t = {
   (* If all of these remain ints then there is no penalty for mutating
      them. *)
@@ -14,6 +16,6 @@ let create () =
     dups = 0; }
 
 let output ch i =
-  Printf.fprintf ch "expanded: %d\n" i.expd;
-  Printf.fprintf ch "generated: %d\n" i.gend;
-  Printf.fprintf ch "duplicates: %d\n" i.dups
+  fprintf ch "#pair \"total nodes expanded\" \"%d\"\n" i.expd;
+  fprintf ch "#pair \"total nodes generated\" \"%d\"\n" i.gend;
+  fprintf ch "#pair \"total duplicates\" \"%d\"\n" i.dups

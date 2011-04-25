@@ -8,6 +8,7 @@ let alg_tbl goal =
     let is_goal = make_is_goal goal
     let d = make_d goal
     let h = make_h goal
+    let fmt fmt d = Format.fprintf fmt "%d" d
   end in
     (let module T = Alg_table.Domain(D) in T.table)
     @ (let module T = Alg_table.Metric_domain(D) in T.table)

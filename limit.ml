@@ -1,5 +1,7 @@
 (* Search limits. *)
 
+open Printf
+
 type t =
   | Expd of int
   | Gend of int
@@ -39,13 +41,13 @@ let arg_spec lims =
 let output ch lims =
   let rec out = function
     | Expd n :: ls ->
-      Printf.fprintf ch "expansion limit: %d\n" n;
+      fprintf ch "#pair \"expansion limit\" \"%d\"\n" n;
       out ls
     | Gend n :: ls ->
-      Printf.fprintf ch "generation limit: %d\n" n;
+      fprintf ch "#pair \"generation limit\" \"%d\"\n" n;
       out ls
     | Time t :: ls ->
-      Printf.fprintf ch "time limit: %g\n" t;
+      fprintf ch "#pair \"time limit\" \"%g\"\n" t;
       out ls
     | [] -> ()
   in out lims
