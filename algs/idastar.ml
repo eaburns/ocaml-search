@@ -18,7 +18,8 @@ struct
 	[D.dup ()], g
       else begin
 	info.Info.expd <- info.Info.expd + 1;
-	let goal, cost = kids info stop bound g infinity (D.succ_iter ()) in
+	let iter = D.succ_iter () in
+	let goal, cost = kids info stop bound g infinity iter in
 	if goal = [] then
 	  [], cost
 	else
