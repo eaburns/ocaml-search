@@ -4,8 +4,10 @@ module Make (D :
   sig
     include Search.Domain
     include Search.Inplace with type inplace_state = state
-  end) =
+  end) : Search.Alg with type state = D.state =
 struct
+
+  type state = D.state
 
   exception Limit_reached
 

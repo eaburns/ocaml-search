@@ -19,9 +19,7 @@ module Inplace (D :
 struct
   let table =
     [
-    (*
       "idastar", (let module M = Idastar.Make(D) in M.search);
-    *)
     ]
 end
 

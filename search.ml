@@ -22,7 +22,7 @@ module type Domain = sig
   val d : state -> int
 
   (** Print the state. *)
-  val pr : state -> unit
+  val fmt : Format.formatter -> state -> unit
 end
 
 (** Search in a domain that allows in place modification of a single
