@@ -11,6 +11,20 @@ struct
     ]
 end
 
+module Inplace (D :
+  sig
+    include Search.Domain
+    include Search.Inplace with type inplace_state = state
+  end) =
+struct
+  let table =
+    [
+    (*
+      "idastar", (let module M = Idastar.Make(D) in M.search);
+    *)
+    ]
+end
+
 module Metric_domain (D :
   sig
     include Search.Domain

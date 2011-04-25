@@ -25,6 +25,28 @@ module type Domain = sig
   val pr : state -> unit
 end
 
+module type Inplace = sig
+  type inplace_state
+  type iter
+  type oper
+
+  (* All of these functions may assume that the search is only
+     exploring a single path at a time. *)
+
+  (* Get an iterator over the successors. *)
+  val succ_iter : unit -> iter
+
+  (* Gets the next child and the transition cost or None if there are
+     no more children.  The current state is passed as part of the
+     result so that the heuristic or goal test may be performed on
+     it. *)
+  val next : iter -> (inplace_state * float) option
+
+  (* Get the path to the current state. *)
+  val path: unit -> inplace_state list
+
+end
+
 (** Spaces that have types attached to their states. *)
 module type Typed_state = sig
   type typed_state
