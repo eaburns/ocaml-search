@@ -20,3 +20,6 @@ Result: "grid_solver" nativedebug
 	"grid/grid_inst"
 	"grid/grid"
 	"grid/grid_main"
+
+Result: "tiles_solver" nativedebug
+	"tiles/tiles"
