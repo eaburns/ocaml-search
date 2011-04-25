@@ -18,18 +18,18 @@ struct
     if f <= bound then begin
       if D.is_goal state then
 	raise (Goal (D.path (), g));
-      let iter = D.succ_iter () in
       info.Info.expd <- info.Info.expd + 1;
-      let rec loop minoob = match D.next iter with
-	| None ->
-	  minoob
-	| Some (kid, c) ->
-	  info.Info.gend <- info.Info.gend + 1;
-	  let minoob' = min (dfs info stop bound (g +. c) kid) minoob in
-	  loop minoob' in
-      loop infinity
+      loop info stop bound g infinity (D.succ_iter ())
     end else
       f
+
+  and loop info stop bound g minoob iter = match D.next iter with
+    | None ->
+      minoob
+    | Some (kid, c) ->
+      info.Info.gend <- info.Info.gend + 1;
+      let minoob' = min (dfs info stop bound (g +. c) kid) minoob in
+      loop info stop bound g minoob' iter
 
   let finite fl = match classify_float fl with
     | FP_nan -> invalid_arg "Idastar.finite: nan"
