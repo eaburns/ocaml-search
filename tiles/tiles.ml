@@ -219,9 +219,9 @@ let h state =
 let d state =
   state.h
 
-let succ_iter inst state parent =
-  { op = get_op inst state.blnk parent.blnk;
-    nxt = 0; }
+let succ_iter inst state gen_op =
+  let op = match gen_op with None -> No_op | Some o -> rev_op o in
+  { op = op; nxt = 0; }
 
 (** Make a next-state function for the given iterator over the given
     in-place state. *)
@@ -235,7 +235,7 @@ let rec next inst md_incr state it =
       let h' = md_incr state.h blnk blnk' conts in
       state.blnk <- blnk';
       state.h <- h';
-      Some ({ state with h = state.h }, 1., op)
+      Some (state, 1., op)
     else
       next inst md_incr state it
   end else

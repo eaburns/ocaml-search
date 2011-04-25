@@ -11,7 +11,7 @@ struct
 
   exception Limit_reached
 
-  let rec dfs info stop bound g ~parent ~state =
+  let rec dfs info stop bound g ?gen_op ~state =
     let f = g +. D.h state in
     if stop info then
       raise Limit_reached;
@@ -20,22 +20,22 @@ struct
 	[D.dup ()], g
       else begin
 	info.Info.expd <- info.Info.expd + 1;
-	let iter = D.succ_iter parent in
+	let iter = D.succ_iter gen_op in
 	let goal, cost = kids info stop bound g infinity state iter in
 	if goal = [] then [], cost else D.dup () :: goal, cost
       end
     end else
       [], f
 
-  and kids info stop bound g minoob state iter = match D.next iter with
+  and kids info stop bound g minoob gen_op iter = match D.next iter with
     | None ->
       [], minoob
     | Some (kid, c, op) ->
       info.Info.gend <- info.Info.gend + 1;
-      let goal, cost = dfs info stop bound (g +. c) ~parent:state ~state:kid in
+      let goal, cost = dfs info stop bound (g +. c) ~gen_op:op ~state:kid in
       D.undo op;
       if goal = [] then
-	kids info stop bound g (min cost minoob) state iter
+	kids info stop bound g (min cost minoob) gen_op iter
       else
 	goal, cost
 
@@ -48,7 +48,7 @@ struct
     let stop = Limit.make_reached lims in
     try
       let rec iter f =
-	let goal, cost = dfs info stop f 0. ~parent:state ~state in
+	let goal, cost = dfs info stop f 0. state in
 	if goal = [] then
 	  if finite cost then iter cost else None
 	else
