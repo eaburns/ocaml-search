@@ -37,6 +37,8 @@ type state = {
   h : float;
 }
 
+type inplace_state = state
+
 type inst = {
   rows : int;
   cols : int;
