@@ -9,10 +9,13 @@ struct
 
   exception Goal of D.state list * float
 
+  exception Limit_reached
+
   let rec dfs info stop bound g state =
     let f = g +. D.h state in
-    let hit_limit = stop info in
-    if not hit_limit && f <= bound then begin
+    if stop info then
+      raise Limit_reached;
+    if f <= bound then begin
       if D.is_goal state then
 	raise (Goal (D.path (), g));
       let iter = D.succ_iter () in
@@ -26,7 +29,7 @@ struct
 	  loop minoob' in
       loop infinity
     end else
-      if hit_limit then infinity else f
+      f
 
   let finite fl = match classify_float fl with
     | FP_nan -> invalid_arg "Idastar.finite: nan"
@@ -40,7 +43,8 @@ struct
 	let f' = dfs info stop f 0. state in
 	if finite f' then iter f' else None in
       iter (D.h state)
-    with Goal (path, cost) ->
-      Some (path, cost)
+    with
+      | Goal (path, cost) -> Some (path, cost)
+      | Limit_reached -> None
 
 end
