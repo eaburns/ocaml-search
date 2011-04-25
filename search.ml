@@ -32,9 +32,6 @@ module type Inplace = sig
   type iter
   type oper
 
-  (* All of these functions may assume that the search is only
-     exploring a single path at a time. *)
-
   (* Get an iterator over the successors. *)
   val succ_iter : unit -> iter
 
