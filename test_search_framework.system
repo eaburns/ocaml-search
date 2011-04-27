@@ -8,6 +8,7 @@ Files:
 "algs/breadth_first"
 "algs/astar"
 "algs/idastar"
+"algs/rtastar"
 "algtab"
 
 Libraries:
