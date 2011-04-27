@@ -12,10 +12,15 @@ let alg_tbl inst mdtab =
 
     let d s = truncate (d s)
 
-    let succs =
-      let md = md_incr inst mdtab in succs inst md
+    let md = md_incr inst mdtab
 
-    let succ_iter, next, undo, dup = inplace inst mdtab
+    let succs = succs inst md
+
+    let succ_iter = succ_iter inst
+
+    let next = next inst md
+
+    let undo = undo inst md
 
     let fmt = fmt inst
 

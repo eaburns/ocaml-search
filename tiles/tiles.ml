@@ -219,7 +219,7 @@ let h state =
 let d state =
   state.h
 
-let succ_iter inst state gen_op =
+let succ_iter inst gen_op =
   let op = match gen_op with None -> No_op | Some o -> rev_op o in
   { op = op; nxt = 0; }
 
@@ -235,7 +235,7 @@ let rec next inst md_incr state it =
       let h' = md_incr state.h blnk blnk' conts in
       state.blnk <- blnk';
       state.h <- h';
-      Some (state, 1., op)
+      Some (1., op)
     else
       next inst md_incr state it
   end else
@@ -252,18 +252,5 @@ let rec undo inst md_incr state op =
   state.h <- h'
 
 (** Duplicate the current in-place state. *)
-let dup state () =
+let dup state =
   { state with contents = copy state.contents; }
-
-(** Make a set of functions that operate on a single state using
-    in-place modification. *)
-let inplace inst mdtab =
-  let md_incr = md_incr inst mdtab in
-  let conts = copy inst.init in
-  let state = { contents = conts;
-		blnk = blank_pos inst conts;
-		h = md inst mdtab conts; } in
-  succ_iter inst state,
-  next inst md_incr state,
-  undo inst md_incr state,
-  dup state

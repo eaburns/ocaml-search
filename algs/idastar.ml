@@ -17,27 +17,28 @@ struct
       raise Limit_reached;
     if f <= bound then begin
       if D.is_goal state then
-	[D.dup ()], g
+	[D.dup state], g
       else begin
 	info.Info.expd <- info.Info.expd + 1;
 	let iter = D.succ_iter gen_op in
-	let goal, cost = kids info stop bound g infinity state iter in
-	if goal = [] then [], cost else D.dup () :: goal, cost
+	let goal, cost = kids info stop bound g infinity gen_op state iter in
+	if goal = [] then [], cost else D.dup state :: goal, cost
       end
     end else
       [], f
 
-  and kids info stop bound g minoob gen_op iter = match D.next iter with
-    | None ->
-      [], minoob
-    | Some (kid, c, op) ->
-      info.Info.gend <- info.Info.gend + 1;
-      let goal, cost = dfs info stop bound (g +. c) ~gen_op:op ~state:kid in
-      D.undo op;
-      if goal = [] then
-	kids info stop bound g (min cost minoob) gen_op iter
-      else
-	goal, cost
+  and kids info stop bound g minoob gen_op state iter =
+    match D.next state iter with
+      | None ->
+	[], minoob
+      | Some (c, op) ->
+	info.Info.gend <- info.Info.gend + 1;
+	let goal, cost = dfs info stop bound (g +. c) ~gen_op:op ~state in
+	D.undo state op;
+	if goal = [] then
+	  kids info stop bound g (min cost minoob) gen_op state iter
+	else
+	  goal, cost
 
   let finite fl = match classify_float fl with
     | FP_nan -> invalid_arg "Idastar.finite: nan"
