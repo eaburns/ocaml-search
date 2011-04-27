@@ -6,36 +6,6 @@ open Tiles_inst
 
 type oper = Left | Right | Up | Down | No_op
 
-(** Create the canonical goal position set for each tile. *)
-let goal_pos : row:int -> col:int -> positions ary = fun ~row ~col ->
-  let size = row * col in
-  let pos = positions size in
-  for i = 0 to size - 1 do set pos i i done;
-  pos
-
-let korf_12 =
-  let s = contents 16 in
-  set s 0 14;
-  set s 1 1;
-  set s 2 9;
-  set s 3 6;
-  set s 4 4;
-  set s 5 8;
-  set s 6 12;
-  set s 7 5;
-  set s 8 7;
-  set s 9 2;
-  set s 10 3;
-  set s 11 0;
-  set s 12 10;
-  set s 13 11;
-  set s 14 13;
-  set s 15 15;
-  { rows = 4;
-    cols = 4;
-    init = s;
-    goal = goal_pos 4 4; }
-
 (** Build a table that gives the Manhattan distance from its goal
     position for each tile given each location. *)
 let md_table inst =
