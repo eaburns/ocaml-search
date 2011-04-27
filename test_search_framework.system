@@ -8,13 +8,9 @@ Files:
 "algs/breadth_first"
 "algs/astar"
 "algs/idastar"
-"alg_table"
+"algtab"
 
 Libraries:
-
-Result: "count_solver" native
-	"count/count_domain"
-	"count/count_main"
 
 Result: "grid_solver" native
 	"grid/grid_inst"

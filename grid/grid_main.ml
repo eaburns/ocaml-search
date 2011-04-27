@@ -13,7 +13,7 @@ let alg_tbl inst =
       let x, y = Grid_inst.loc inst.Grid_inst.h i in
       Format.fprintf fmt "x=%d, y=%d@\n" x y
   end in
-  (let module T = Alg_table.Domain(D) in T.table)
+  (let module T = Algtab.Domain(D) in T.table)
 
 let warm_gc inst =
 (*

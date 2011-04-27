@@ -25,8 +25,8 @@ let alg_tbl inst mdtab =
     let fmt = fmt inst
 
   end in
-  (let module T = Alg_table.Domain(D) in T.table)
-  @ (let module T = Alg_table.Inplace(D) in T.table)
+  (let module T = Algtab.Domain(D) in T.table)
+  @ (let module T = Algtab.Inplace(D) in T.table)
 
 let time f =
   let stime = Sys.time () in
