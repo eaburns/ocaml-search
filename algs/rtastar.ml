@@ -94,13 +94,16 @@ struct
 
   let h stop info dlim seen state =
     try
-      Ht.find seen state
+      let h = Ht.find seen state in
+      info.Info.dups <- info.Info.dups + 1;
+      h
     with Not_found ->
       let h = E.eval stop info dlim state in
       Ht.add seen state h;
       h
 
   let search info lims args init =
+    Random.self_init ();
     let dlim = int_of_string args.(0) in
     let stop = Limit.make_stop lims in
     let seen = Ht.create 149 in
