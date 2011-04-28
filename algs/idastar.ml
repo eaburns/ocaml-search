@@ -46,7 +46,7 @@ struct
     | _ -> true
 
   let search info lims _orgs state =
-    let stop = Limit.make_reached lims in
+    let stop = Limit.make_stop lims in
     try
       let rec iter f =
 	let goal, cost = dfs info stop f 0. state in

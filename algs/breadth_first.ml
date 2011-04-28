@@ -19,9 +19,9 @@ struct
     let q = Queue.create () in
     let goal = ref None in
     let rec init = { s = state; c = 0.; p = init } in
-    let lim_reached = Limit.make_reached lims in
+    let stop = Limit.make_stop lims in
     Queue.push init q;
-    while not (Queue.is_empty q) && !goal = None && not (lim_reached info) do
+    while not (Queue.is_empty q) && !goal = None && not (stop info) do
       let { s = s; c = c; } as n = Queue.take q in
       if D.is_goal s then
 	goal := Some n

@@ -57,10 +57,10 @@ struct
     let opn = Heap.init ~index:update_pq_pos is_better [||] in
     let cls = Ht.create 149 in
     let goal = ref None in
-    let lim_reached = Limit.make_reached lims in
+    let stop = Limit.make_stop lims in
     Heap.push opn init;
     Ht.add cls state init;
-    while not (Heap.is_empty opn) && !goal = None && not (lim_reached info) do
+    while not (Heap.is_empty opn) && !goal = None && not (stop info) do
       let { s = s; } as n = Heap.pop opn in
       if D.is_goal s then goal := Some n else handle_children info opn cls n
     done;

@@ -9,7 +9,7 @@ type t =
 
 (** Builds a function that test if the given limit has been
     reached. *)
-let make_reached lims =
+let make_stop lims =
   let t = Sys.time () in
   let final_times t = function Time lim -> Time (t +. lim) | l -> l in
   let lims = List.map (final_times t) lims in
