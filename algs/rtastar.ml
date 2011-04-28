@@ -45,7 +45,9 @@ struct
 
 end
 
-(* Perform DFS using non-inplace methods. *)
+(* Perform DFS using out-of-place evaluation of a state.  This can be
+   faster than the in-place version, especially in domains with small
+   state representations. *)
 module Outplace_eval(D : sig include Search.Domain end) :
   Eval with type state = D.state =
 struct
