@@ -22,6 +22,8 @@ let alg_tbl inst mdtab =
 
     let undo = undo inst md
 
+    let op = op inst
+
     let fmt = fmt inst
 
   end in

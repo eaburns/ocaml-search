@@ -49,6 +49,10 @@ module type Inplace = sig
   (* Get a duplicate of the current state. *)
   val dup : inplace_state -> inplace_state
 
+  (* Get the operator that transitions between the two given
+     states. *)
+  val op : inplace_state -> inplace_state -> oper
+
 end
 
 (** Spaces that have types attached to their states. *)

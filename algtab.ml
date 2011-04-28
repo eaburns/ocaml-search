@@ -9,6 +9,7 @@ struct
       "bfs", (let module M = Breadth_first.Make(D) in M.search);
       "astar", (let module M = Astar.Make(D) in M.search);
       "rtastar", (let module M = Rtastar.Outplace(D) in M.search);
+      "idastar", (let module M = Idastar.Outplace(D) in M.search);
     ]
 end
 
@@ -20,7 +21,7 @@ module Inplace (D :
 struct
   let table =
     [
-      "idastar", (let module M = Idastar.Make(D) in M.search);
+      "idastar-inplace", (let module M = Idastar.Inplace(D) in M.search);
       "rtastar-inplace", (let module M = Rtastar.Inplace(D) in M.search);
     ]
 end

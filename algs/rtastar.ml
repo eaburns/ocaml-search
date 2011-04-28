@@ -1,4 +1,3 @@
-
 module type Eval = sig
   type state
 
@@ -18,7 +17,32 @@ module Inplace_eval(D :
 struct
   type state = D.state
 
-  let eval _stop _info _dlim ~parent:_ ~state:_ = nan
+  let eval stop info dlim ~parent ~state =
+
+    let rec dfs ~alpha ~g depth gen_op state =
+      if D.is_goal state then
+	g
+      else begin
+	let f = g +. D.h state in
+	if depth < dlim && f < alpha && not (stop info) then begin
+	  let iter = D.succ_iter (Some gen_op) in
+	  info.Info.expd <- info.Info.expd + 1;
+	  best_kid ~alpha ~g (depth + 1) state iter
+	end else
+	  minf alpha f
+      end
+
+    and best_kid ~alpha ~g depth' state iter =
+      match D.next state iter with
+	| None -> alpha
+	| Some (c, op) ->
+	  info.Info.gend <- info.Info.gend + 1;
+	  let v = dfs ~alpha ~g:(g +. c) depth' op state in
+	  D.undo state op;
+	  best_kid ~alpha:(minf alpha v) ~g depth' state iter in
+
+    dfs ~alpha:infinity ~g:0. 0 (D.op parent state) state
+
 end
 
 (* Perform DFS using non-inplace methods. *)
@@ -69,7 +93,7 @@ struct
     else begin
       let kids = D.succs ~parent ~state in
       info.Info.expd <- info.Info.expd + 1;
-      info.Info.gend <- info.Info.gend + (List.length kids);
+      info.Info.gend <- info.Info.gend + List.length kids;
       let mins = ref [] and minf = ref infinity and sndf = ref infinity in
       let consider_kid ((k, c) as kid) =
 	let f = h ~parent:state ~state:k +. c in
