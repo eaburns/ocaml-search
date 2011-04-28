@@ -1,4 +1,9 @@
-(* Iterative deepening A*. *)
+  (* Iterative deepening A*. *)
+
+let finite fl = match classify_float fl with
+  | FP_nan -> invalid_arg "Idastar.finite: nan"
+  | FP_infinite -> false
+  | _ -> true
 
 (* This in-place version may be slower than the out-of-place version
    because mutating record fields in OCaml may be expensive (hash table
@@ -43,11 +48,6 @@ struct
 	  kids info stop bound g (min cost minoob) state iter
 	else
 	  goal, cost
-
-  let finite fl = match classify_float fl with
-    | FP_nan -> invalid_arg "Idastar.finite: nan"
-    | FP_infinite -> false
-    | _ -> true
 
   let search info lims _orgs state =
     let stop = Limit.make_stop lims in
@@ -96,10 +96,6 @@ struct
       else
 	goal, cost
 
-  let finite fl = match classify_float fl with
-    | FP_nan -> invalid_arg "Idastar.finite: nan"
-    | FP_infinite -> false
-    | _ -> true
 
   let search info lims _orgs state =
     let stop = Limit.make_stop lims in
