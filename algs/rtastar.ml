@@ -3,7 +3,8 @@ module type Eval = sig
   type state
 
   (** [eval stop depth_limit state] *)
-  val eval : (Info.t -> bool) -> Info.t -> int -> state -> float
+  val eval : (Info.t -> bool) -> Info.t -> int
+    -> parent:state -> state:state -> float
 end
 
 let minf (a:float) b = if a < b then a else b
@@ -17,7 +18,7 @@ module Inplace_eval(D :
 struct
   type state = D.state
 
-  let eval _stop _info _dlim _state = nan
+  let eval _stop _info _dlim ~parent:_ ~state:_ = nan
 end
 
 (* Perform DFS using non-inplace methods. *)
@@ -26,7 +27,7 @@ module Outplace_eval(D : sig include Search.Domain end) :
 struct
   type state = D.state
 
-  let eval stop info dlim state =
+  let eval stop info dlim ~parent ~state =
 
     let rec dfs ~alpha ~g depth ~parent ~state =
       if D.is_goal state then
@@ -48,7 +49,7 @@ struct
 	best_kid ~alpha:(minf alpha v) ~g depth' parent ks
       | [] -> alpha in
 
-    dfs ~alpha:infinity ~g:0. 0 ~parent:state ~state
+    dfs ~alpha:infinity ~g:0. 0 ~parent ~state
 
 end
 
@@ -60,18 +61,18 @@ struct
 
   module Ht = Hashtbl.Make(D)
 
-  let rec rtastar stop info h seen path cost state =
+  let rec rtastar stop info h seen path cost ~parent ~state =
     if stop info then
       None
     else if D.is_goal state then
       Some (List.rev path, cost)
     else begin
-      let kids = D.succs ~parent:state ~state in
+      let kids = D.succs ~parent ~state in
       info.Info.expd <- info.Info.expd + 1;
       info.Info.gend <- info.Info.gend + (List.length kids);
       let mins = ref [] and minf = ref infinity and sndf = ref infinity in
       let consider_kid ((k, c) as kid) =
-	let f = h k +. c in
+	let f = h ~parent:state ~state:k +. c in
 	if f < !minf then begin
 	  sndf := !minf;
 	  minf := f;
@@ -88,17 +89,17 @@ struct
 	let len = List.length !mins in
 	let n = if len = 1 then 0 else Random.int len in
 	let k, c = List.nth !mins n in
-	rtastar stop info h seen (k :: path) (cost +. c) k
+	rtastar stop info h seen (k :: path) (cost +. c)~parent:state ~state:k
       end
     end
 
-  let h stop info dlim seen state =
+  let h stop info dlim seen ~parent ~state =
     try
       let h = Ht.find seen state in
       info.Info.dups <- info.Info.dups + 1;
       h
     with Not_found ->
-      let h = E.eval stop info dlim state in
+      let h = E.eval stop info dlim ~parent ~state in
       Ht.add seen state h;
       h
 
@@ -111,7 +112,7 @@ struct
     let stop = Limit.make_stop lims in
     let seen = Ht.create 149 in
     let h = h stop info dlim seen in
-    rtastar stop info h seen [init] 0. init
+    rtastar stop info h seen [init] 0. ~parent:init ~state:init
 end
 
 (* The inplace RTA* search module. *)
