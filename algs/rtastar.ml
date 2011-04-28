@@ -62,7 +62,7 @@ struct
     if stop info then
       None
     else if D.is_goal state then
-      Some (List.rev (state :: path), cost)
+      Some (List.rev path, cost)
     else begin
       let kids = D.succs ~parent:state ~state in
       info.Info.expd <- info.Info.expd + 1;
@@ -73,15 +73,19 @@ struct
 	if v < !minvl then begin
 	  sndvl := !minvl; minvl := v; mins := [kid];
 	end else if v = !minvl then
-	  mins := kid :: !mins
-	else if v < !sndvl then
-	  sndvl := v in
+	    mins := kid :: !mins
+	  else if v < !sndvl then
+	    sndvl := v in
       List.iter consider_kid kids;
-      Ht.replace seen state !sndvl;
-      let len = List.length !mins in
-      let n = if len = 1 then 0 else Random.int len in
-      let k, c = List.nth !mins n in
-      rtastar stop info h seen (k :: path) (cost +. c) k
+      if !mins = [] then
+	None
+      else begin
+	Ht.replace seen state !sndvl;
+	let len = List.length !mins in
+	let n = if len = 1 then 0 else Random.int len in
+	let k, c = List.nth !mins n in
+	rtastar stop info h seen (k :: path) (cost +. c) k
+      end
     end
 
   let h stop info dlim seen state =
