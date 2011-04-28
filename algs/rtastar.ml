@@ -28,25 +28,27 @@ struct
 
   let eval stop info dlim state =
 
-    let rec dfs alpha g depth ~parent ~state =
-      let f = g +. D.h state in
+    let rec dfs ~alpha ~g depth ~parent ~state =
       if D.is_goal state then
 	g
-      else if not (stop info) && depth < dlim && f < alpha then begin
-	let succs = D.succs ~parent ~state in
-	info.Info.expd <- info.Info.expd + 1;
-	info.Info.gend <- info.Info.gend + (List.length succs);
-	best_kid alpha g (depth + 1) state succs
-      end else
-	minf alpha f
+      else begin
+	let f = g +. D.h state in
+	if depth < dlim && f < alpha && not (stop info) then begin
+	  let succs = D.succs ~parent ~state in
+	  info.Info.expd <- info.Info.expd + 1;
+	  info.Info.gend <- info.Info.gend + (List.length succs);
+	  best_kid ~alpha ~g (depth + 1) state succs
+	end else
+	  minf alpha f
+      end
 
-    and best_kid alpha g depth' parent = function
+    and best_kid ~alpha ~g depth' parent = function
       | (k, c) :: ks ->
-	let v = dfs alpha (g +. c) depth' ~parent ~state:k in
-	best_kid (minf alpha v) g depth' parent ks
+	let v = dfs ~alpha ~g:(g +. c) depth' ~parent ~state:k in
+	best_kid ~alpha:(minf alpha v) ~g depth' parent ks
       | [] -> alpha in
 
-    dfs infinity 0. 0 ~parent:state ~state
+    dfs ~alpha:infinity ~g:0. 0 ~parent:state ~state
 
 end
 
