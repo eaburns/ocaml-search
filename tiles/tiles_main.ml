@@ -43,7 +43,9 @@ let args () =
     else
       let l = Array.length !args in
       args := Array.init (l + 1) (fun i -> if i < l then (!args).(i) else s) in
-  Arg.parse (Limit.arg_spec lims) alg_arg "./tiles_main <alg> [<arg>...]";
+  let spec =
+    Limit.arg_spec lims @ [ "-c", Arg.String (fun _ -> ()), "ignored" ] in
+  Arg.parse spec alg_arg "./tiles_main <alg> [<arg>...]";
   !lims, !alg, !args
 
 let _ =
