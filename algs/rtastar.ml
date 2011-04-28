@@ -89,7 +89,8 @@ struct
 	let len = List.length !mins in
 	let n = if len = 1 then 0 else Random.int len in
 	let k, c = List.nth !mins n in
-	rtastar stop info h seen (k :: path) (cost +. c) ~parent:state ~state:k
+	rtastar stop info h seen (k :: path) (cost +. c)
+	  ~parent:state ~state:k
       end
     end
 
