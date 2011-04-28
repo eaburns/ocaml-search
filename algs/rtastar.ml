@@ -103,8 +103,11 @@ struct
       h
 
   let search info lims args init =
-    Random.self_init ();
     let dlim = int_of_string args.(0) in
+    if Array.length args > 1 then
+      Random.init (int_of_string args.(1))
+    else
+      Random.self_init ();
     let stop = Limit.make_stop lims in
     let seen = Ht.create 149 in
     let h = h stop info dlim seen in
