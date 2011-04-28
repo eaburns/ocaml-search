@@ -7,7 +7,6 @@ module type Eval = sig
 end
 
 let minf (a:float) b = if a < b then a else b
-let comparef (a:float) b = if a = b then 0 else if a < b then ~-1 else 1
 
 (* Perform DFS using inplace modification. *)
 module Inplace_eval(D :
