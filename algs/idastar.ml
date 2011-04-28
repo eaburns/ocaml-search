@@ -1,5 +1,9 @@
 (* Iterative deepening A*. *)
 
+(* This in-place version may be slower than the out-of-place version
+   because mutating record fields in OCaml may be expensive (hash table
+   lookup).  On domains where the states are small (and easy to copy),
+   the out-of-place version will actually be faster. *)
 module Inplace (D :
   sig
     include Search.Domain
