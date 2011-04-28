@@ -3,7 +3,11 @@
 
 let minf (a:float) b = if a < b then a else b
 
-(* The core of the RTA* search algorithm. *)
+(* The core of the RTA* search algorithm.  This does not meet the
+   Search.Alg interface because its search function requires the [eval]
+   parameter.  This parameter is supplied in the [Inplace] and [Outplace]
+   modules with either in-place depth-first search or out-of-place
+   depth-first search. *)
 module Make (D : Search.Domain) =
 struct
   type state = D.state
@@ -27,9 +31,9 @@ struct
 	  minf := f;
 	  mins := [kid];
 	end else if f = !minf then
-	  mins := kid :: !mins
-	else if f < !sndf then
-	  sndf := f in
+	    mins := kid :: !mins
+	  else if f < !sndf then
+	    sndf := f in
       List.iter consider_kid kids;
       if !mins = [] then
 	None
