@@ -97,7 +97,7 @@ struct
       done;
       match !goal with
 	| Some _ -> !goal
-	| None when !mins = [] -> None
+	| None when !mins = [] -> None	(* dead-end *)
 	| None ->
 	  Ht.replace seen state !sndvl;
 	  let len = List.length !mins in
@@ -117,7 +117,7 @@ struct
 	| E.Goal _ as g -> g
 
   let search info lims args init =
-    let dlim = 25 in
+    let dlim = int_of_string args.(0) in
     let stop = Limit.make_stop lims in
     let seen = Ht.create 149 in
     let h = h stop info dlim seen in
