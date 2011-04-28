@@ -40,17 +40,17 @@ struct
 	let succs = D.succs ~parent ~state in
 	info.Info.expd <- info.Info.expd + 1;
 	info.Info.gend <- info.Info.gend + (List.length succs);
-	match kids alpha g (depth + 1) state succs with
+	match best_kid alpha g (depth + 1) state succs with
 	  | Goal (path, cost) -> Goal (state :: path, cost)
 	  | vl -> vl
       end else
 	Val (minf alpha f)
 
-    and kids alpha g depth' parent = function
+    and best_kid alpha g depth' parent = function
       | (k, c) :: ks ->
 	begin match dfs alpha (g +. c) depth' ~parent ~state:k with
 	  | Goal _ as g -> g
-	  | Val v -> kids (minf alpha v) g depth' parent ks
+	  | Val v -> best_kid (minf alpha v) g depth' parent ks
 	end
       | [] -> Val alpha in
 
@@ -82,8 +82,8 @@ struct
 	let (k, c) = List.hd !kids in
 	kids := List.tl !kids;
 	match h k with
-	  | E.Goal (p, c) ->
-	    goal := Some (List.rev (p @ path), c +. cost)
+	  | E.Goal (p, cst) ->
+	    goal := Some (List.rev (p @ path), c +. cst +. cost)
 	  | E.Val h ->
 	    let v = h +. c in
 	    if v < !minvl then begin
