@@ -71,11 +71,13 @@ struct
       let consider_kid ((k, c) as kid) =
 	let v = h k +. c in
 	if v < !minvl then begin
-	  sndvl := !minvl; minvl := v; mins := [kid];
+	  sndvl := !minvl;
+	  minvl := v;
+	  mins := [kid];
 	end else if v = !minvl then
-	    mins := kid :: !mins
-	  else if v < !sndvl then
-	    sndvl := v in
+	  mins := kid :: !mins
+	else if v < !sndvl then
+	  sndvl := v in
       List.iter consider_kid kids;
       if !mins = [] then
 	None
