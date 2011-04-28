@@ -73,10 +73,7 @@ let applicable inst blnk op =
 (** Applies [op] to [cont], where the blank is in position [blnk].
     The result is the new blank location. *)
 let apply inst : int -> contents ary -> oper -> int =
-  let size = inst.rows * inst.cols in
   (fun blnk cont op ->
-    assert (applicable inst blnk op);
-    assert (get cont blnk = 0);
     let cols = inst.cols in
     let blnk' = match op with
       | Left -> blnk - 1
@@ -84,11 +81,9 @@ let apply inst : int -> contents ary -> oper -> int =
       | Up -> blnk - cols
       | Down -> blnk + cols
       | No_op -> blnk in
-    assert (blnk' < size);
     let tile = get cont blnk' in
     set cont blnk tile;
     set cont blnk' 0;
-    assert (get cont blnk' = 0);
     blnk')
 
 (** Get the operator that transitions the blank from [blnk] to
@@ -191,16 +186,16 @@ let d state =
 
 let succ_iter inst gen_op =
   let op = match gen_op with None -> No_op | Some o -> rev_op o in
-  { op = op; nxt = 0; }
+  { op = op; nxt = Array.length opers - 1; }
 
 (** Make a next-state function for the given iterator over the given
     in-place state. *)
 let rec next inst md_incr state it =
-  if it.nxt < Array.length opers then begin
+  if it.nxt >= 0 then begin
     let op = opers.(it.nxt) in
-    it.nxt <- it.nxt + 1;
+    it.nxt <- it.nxt - 1;
     let conts = state.contents and blnk = state.blnk in
-    if (applicable inst blnk op) && op <> it.op then
+    if op <> it.op && (applicable inst blnk op) then
       let blnk' = apply inst blnk conts op in
       let h' = md_incr state.h blnk blnk' conts in
       state.blnk <- blnk';
@@ -215,7 +210,6 @@ let rec next inst md_incr state it =
 let rec undo inst md_incr state op =
   let rev = rev_op op in
   let conts = state.contents and blnk = state.blnk in
-  assert (applicable inst blnk rev);
   let blnk' = apply inst blnk conts rev in
   let h' = md_incr state.h blnk blnk' conts in
   state.blnk <- blnk';
@@ -224,3 +218,6 @@ let rec undo inst md_incr state op =
 (** Duplicate the current in-place state. *)
 let dup state =
   { state with contents = copy state.contents; }
+
+let op inst a b =
+  get_op inst a.blnk b.blnk
