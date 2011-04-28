@@ -67,22 +67,22 @@ struct
       let kids = D.succs ~parent:state ~state in
       info.Info.expd <- info.Info.expd + 1;
       info.Info.gend <- info.Info.gend + (List.length kids);
-      let mins = ref [] and minvl = ref infinity and sndvl = ref infinity in
+      let mins = ref [] and minf = ref infinity and sndf = ref infinity in
       let consider_kid ((k, c) as kid) =
-	let v = h k +. c in
-	if v < !minvl then begin
-	  sndvl := !minvl;
-	  minvl := v;
+	let f = h k +. c in
+	if f < !minf then begin
+	  sndf := !minf;
+	  minf := f;
 	  mins := [kid];
-	end else if v = !minvl then
+	end else if f = !minf then
 	  mins := kid :: !mins
-	else if v < !sndvl then
-	  sndvl := v in
+	else if f < !sndf then
+	  sndf := f in
       List.iter consider_kid kids;
       if !mins = [] then
 	None
       else begin
-	Ht.replace seen state !sndvl;
+	Ht.replace seen state !sndf;
 	let len = List.length !mins in
 	let n = if len = 1 then 0 else Random.int len in
 	let k, c = List.nth !mins n in
