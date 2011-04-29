@@ -18,7 +18,7 @@ Result: "grid_solver" native
 	"grid/grid"
 	"grid/grid_main"
 
-Result: "tiles_solver" native
+Result: "tiles_solver" nativeprof
 	"tiles/tiles_inst"
 	"tiles/tiles"
 	"tiles/tiles_main"

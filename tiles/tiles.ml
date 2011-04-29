@@ -165,7 +165,7 @@ let fmt_op fmt = function
 let succs inst md_incr ~parent ~state =
   let p_op = get_op inst state.blnk parent.blnk in
   let consider_op lst op =
-    if op = p_op || not (applicable inst state.blnk op) then
+    if op == p_op || not (applicable inst state.blnk op) then
       lst
     else begin
       let conts = copy state.contents in
@@ -195,7 +195,7 @@ let rec next inst md_incr state it =
     let op = opers.(it.nxt) in
     it.nxt <- it.nxt - 1;
     let conts = state.contents and blnk = state.blnk in
-    if op <> it.op && (applicable inst blnk op) then
+    if op != it.op && (applicable inst blnk op) then
       let blnk' = apply inst blnk conts op in
       let h' = md_incr state.h blnk blnk' conts in
       state.blnk <- blnk';
