@@ -70,6 +70,7 @@ struct
 end
 
 (* The inplace RTA* search module. *)
+(*
 module Inplace (D :
   sig
     include Search.Domain
@@ -144,3 +145,4 @@ struct
   let search = search eval
 
 end
+*)

@@ -37,11 +37,17 @@ end
 
 include Ary
 
+type opvec = {
+  mvs : int array;
+  mutable n : int;
+}
+
 type inst = {
   rows : int;
   cols : int;
   init : contents ary;
   goal : positions ary;
+  ops : opvec array;
 }
 
 (** Create the canonical goal position set for each tile. *)
@@ -50,6 +56,21 @@ let goal_pos : row:int -> col:int -> positions ary = fun ~row ~col ->
   let pos = positions size in
   for i = 0 to size - 1 do set pos i i done;
   pos
+
+let initops r c =
+  let sz = r * c in
+  let addop (o:opvec) (b:int) =
+    o.mvs.(o.n) <- b;
+    o.n <- o.n + 1 in
+  let posops i =
+    let o = { n = 0; mvs = [| -1; -1; -1; -1 |]; } in
+    let imodc = i mod c in
+    if i >= c then addop o (i - c);
+    if imodc > 0 then addop o (i - 1);
+    if imodc < c - 1 then addop o (i + 1);
+    if i < sz - c then addop o (i + c);
+    o in
+  Array.init sz posops
 
 let korf_12 =
   let s = contents 16 in
@@ -71,6 +92,7 @@ let korf_12 =
   set s 15 15;
   { rows = 4;
     cols = 4;
+    ops = initops 4 4;
     init = s;
     goal = goal_pos 4 4; }
 
@@ -97,5 +119,6 @@ let read ch =
   let goal = read_positions ch size in
   { rows = rows;
     cols = cols;
+    ops = initops rows cols;
     init = contents_of_positions init size;
     goal = goal; }

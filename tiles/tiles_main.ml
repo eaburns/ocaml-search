@@ -2,27 +2,21 @@
 
 open Printf
 
-let alg_tbl inst mdtab =
+let alg_tbl inst incrtab =
   let module D = struct
     include Tiles
 
-    let is_goal =
-      let is_goal = make_is_goal inst in
-      (fun state -> is_goal state.Tiles.contents)
+    let is_goal state = state.h = 0
 
     let d s = truncate (d s)
 
-    let md = md_incr inst mdtab
+    let succs = succs inst incrtab
 
-    let succs = succs inst md
+    let nops = nops inst
 
-    let succ_iter = succ_iter inst
+    let nthop = nthop inst
 
-    let next = next inst md
-
-    let undo = undo inst md
-
-    let op = op inst
+    let apply = apply incrtab
 
     let fmt = fmt inst
 
@@ -54,7 +48,8 @@ let _ =
   let lims, alg, args = args () in
   let inst = Tiles_inst.read stdin in
   let mdtab = Tiles.md_table inst in
-  let tbl = alg_tbl inst mdtab in
+  let incrtab = Tiles.md_incr_tab inst mdtab in
+  let tbl = alg_tbl inst incrtab in
   let search = List.assoc alg tbl in
   let init =
     { Tiles.contents = inst.Tiles_inst.init;

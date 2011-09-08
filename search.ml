@@ -29,29 +29,26 @@ end
     state. *)
 module type Inplace = sig
   type inplace_state
-  type iter
   type oper
+  type undoinfo
 
-  (* Get an iterator over the successors.  The parameter is the
-     operator that generated the given state.  This can be used to
-     avoid regenerating the parent. *)
-  val succ_iter : oper option -> iter
+  val nop : oper
 
-  (* Gets the next child and the transition cost or None if there are
-     no more children.  The current state is passed as part of the
-     result so that the heuristic or goal test may be performed on it.
-     The first argument is the parent state. *)
-  val next : inplace_state -> iter -> (float * oper) option
+  val nops : inplace_state -> int
+
+  val nthop : inplace_state -> int -> oper
+
+  val revop : inplace_state -> oper -> oper
+
+  val apply : inplace_state -> oper -> float
+
+  val undoinfo : inplace_state -> oper -> undoinfo
 
   (* Undo the given operation on the current state. *)
-  val undo : inplace_state -> oper -> unit
+  val undo : inplace_state -> undoinfo -> unit
 
   (* Get a duplicate of the current state. *)
   val dup : inplace_state -> inplace_state
-
-  (* Get the operator that transitions between the two given
-     states. *)
-  val op : inplace_state -> inplace_state -> oper
 
 end
 
