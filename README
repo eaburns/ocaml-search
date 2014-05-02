@@ -1,0 +1,9 @@
+This is a heuristic search framework that I wrote once upon a time,
+back when I was into OCaml. Its tiny and I never really did anything
+with it, but I think that it's kind of nice. However, it's a bit
+obtuse if you aren't into OCaml's functors.
+
+I haven't tried building it in years. In fact, it relies on a custom
+build system called ocm2 that you probably don't have access to (email
+me if you are extremely interested and perhaps I'll put it up here
+too). You can probably write a Makefile for it easily.
